@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+<h:head>
+    <title>Стартовая страница</title>
+    <h:outputStylesheet name="css/style.css"/>
+    <link rel="icon" type="image/x-icon" href="#{resource['images/clock.ico']}"/>
+</h:head>
+<h:body>
+    <div class="header">
+        <h2>Автор: Ведерникова Анна Васильевна</h2>
+        <h2>Группа: P3209</h2>
+        <h2>Вариант: 8643</h2>
+    </div>
+    <div class="hero">
+        <div class="container">
+            <div class="clock">
+                <span id="hrs">00</span>
+                <span>:</span>
+                <span id="min">00</span>
+                <span>:</span>
+                <span id="sec">00</span>
+            </div>
+            <div class="datetime">
+                <span id="dayname">Day</span>
+                <span>,</span>
+                <span id="month">Month</span>
+                <span id="daynum">00</span>
+                <span>,</span>
+                <span id="year">Year</span>
+            </div>
+        </div>
+        <div class="button-container">
+            <h:button value="Основная страница" outcome="main" styleClass="glass-button"/>
+        </div>
+    </div>
+    <h:outputScript name="js/clock.js"/>
+</h:body>
+</html>

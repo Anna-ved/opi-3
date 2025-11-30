@@ -1,0 +1,228 @@
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600&display=swap');
+* {
+    margin: 0;
+    padding: 0;
+    font-family: 'Playfair Display', serif;
+    box-sizing: border-box;
+}
+
+html, body {
+    height: 100%;
+}
+
+body {
+    width: 100%;
+    min-height: 100vh;
+    background: linear-gradient(45deg, #25344f, #617891);
+    color: #fff;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: flex-start;
+    gap: 30px;
+    padding: 40px 20px;
+}
+
+.glass-container {
+    background: rgba(97, 120, 145, 0.11);
+    border-radius: 15px;
+    padding: 25px;
+    backdrop-filter: blur(40px);
+    border: 1px solid rgba(255,255,255,0.1);
+    box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+}
+
+.users-choice {
+    width: 500px;
+    min-height: 400px;
+}
+
+.graph {
+    background: rgba(97, 120, 145, 0.11);
+    border-radius: 15px;
+    padding: 15px;
+    backdrop-filter: blur(40px);
+    border: 1px solid rgba(255,255,255,0.1);
+    width: 400px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.graph svg {
+    width: auto;
+    height: auto;
+    display: block;
+    margin: 0 auto;
+}
+
+.table-container {
+    width: 90%;
+    max-width: 1200px;
+    margin: 20px auto;
+}
+
+label {
+    display: block;
+    font-size: 18px;
+    font-weight: 500;
+    margin-bottom: 15px;
+    color: #fff;
+    text-align: center;
+}
+
+.choice-x, .choice-r {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    justify-content: center;
+    margin-bottom: 20px;
+}
+
+.glass-option {
+    background: rgba(151, 125, 255, 0.15);
+    color: #fff;
+    border: 1px solid rgba(255,255,255,0.2);
+    padding: 12px 20px;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: all 0.3s;
+    font-size: 16px;
+    min-width: 50px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+}
+
+.glass-option:hover, .glass-option.active {
+    background: rgba(151, 125, 255, 0.3);
+    transform: translateY(-2px);
+}
+.glass-option.active {
+    background: rgba(151, 125, 255, 0.4) !important;
+    border: 2px solid rgba(255,255,255,0.7) !important;
+    transform: translateY(-2px);
+}
+
+.glass-option.selected {
+    background: rgba(151, 125, 255, 0.4);
+    border: 2px solid rgba(255,255,255,0.5);
+}
+
+.choice-y {
+    margin-bottom: 25px;
+}
+
+.glass-input {
+    width: 100%;
+    height: 45px;
+    background: rgba(255,255,255,0.1);
+    border: 1px solid rgba(255,255,255,0.2);
+    border-radius: 10px;
+    padding: 0 15px;
+    color: #fff;
+    font-size: 16px;
+    backdrop-filter: blur(10px);
+}
+
+.glass-input::placeholder {
+    color: rgba(255,255,255,0.6);
+}
+
+.helper {
+    display: flex;
+    gap: 15px;
+    justify-content: center;
+    margin-top: 20px;
+}
+
+.glass-button {
+    background: rgba(151, 125, 255, 0.2);
+    color: #fff;
+    border: 1px solid rgba(255,255,255,0.3);
+    padding: 12px 25px;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: all 0.3s;
+    font-size: 16px;
+    text-decoration: none;
+}
+
+.glass-button:hover {
+    background: rgba(151, 125, 255, 0.4);
+    transform: translateY(-2px);
+}
+
+.table {
+    width: 100%;
+    border-collapse: collapse;
+    background: rgba(97, 120, 145, 0.15);
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+.table-header {
+    background: rgba(151, 125, 255, 0.2);
+    color: #fff;
+    padding: 15px;
+    text-align: center;
+}
+
+.table td {
+    padding: 12px;
+    text-align: center;
+    border-bottom: 1px solid rgba(255,255,255,0.1);
+}
+
+.return-button {
+    position: fixed;
+    bottom: 30px;
+    right: 30px;
+}
+.svg-graph {
+    cursor: pointer;
+    background: rgba(97, 120, 145, 0.1);
+    border-radius: 10px;
+    padding: 10px;
+}
+
+.svg-graph line, .svg-graph polygon, .svg-graph path {
+    stroke: white;
+    stroke-width: 2;
+}
+
+.svg-graph text {
+    fill: white;
+    font-size: 14px;
+}
+.users-choice, .graph {
+    min-height: 500px;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+}
+
+.users-choice {
+    height: auto
+}
+
+.graph {
+    height: auto;
+}
+.error-message {
+    background: rgba(255, 107, 107, 0.2);
+    border: 1px solid rgba(255, 107, 107, 0.5);
+    border-radius: 8px;
+    padding: 12px;
+    margin-top: 10px;
+    color: #ff6b6b;
+    text-align: center;
+    backdrop-filter: blur(10px);
+    animation: fadeIn 0.3s ease;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-10px); }
+    to { opacity: 1; transform: translateY(0); }
+}

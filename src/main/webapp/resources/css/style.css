@@ -1,0 +1,139 @@
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600&display=swap');
+*{
+    margin:0;
+    padding: 0;
+    font-family: 'Playfair Display', serif;
+    box-sizing: border-box;
+}
+.header {
+    width: 100%;
+    background: rgba(151, 125, 255, 0.11);
+    color: #fff;
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 1000;
+    display: flex;
+    align-items: center;
+    backdrop-filter: blur(40px);
+    flex-direction: column;
+    justify-content: center;
+    gap: 0.5rem;
+    padding: 1rem;
+}
+.header h2 {
+    font-size: 20px;
+    text-align: center;
+}
+.hero{
+    width: 100%;
+    min-height: 100vh;
+    background: linear-gradient(45deg, #f2e6ee, #977dff);
+    color: #fff;
+    position: relative;
+}
+.container{
+    width: 800px;
+    height: 180px;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+.clock{
+    width: 100%;
+    height: 100%;
+    background: rgba(151, 125, 255, 0.11);
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    backdrop-filter: blur(40px);
+}
+.container::before{
+    content: '';
+    width: 180px;
+    height: 180px;
+    background: linear-gradient(45deg, #ffccf2, #977dff);
+    border-radius: 5px;
+    position: absolute;
+    left: -50px;
+    top: -50px;
+    z-index: -1;
+}
+.container::after{
+    content: '';
+    width: 180px;
+    height: 180px;
+    background: linear-gradient(45deg, #977dff, #0033ff);
+    border-radius: 50%;
+    position: absolute;
+    right: -30px;
+    bottom: -50px;
+    z-index: -1;
+}
+.clock span{
+    font-size: 85px;
+    width: 110px;
+    display: inline-block;
+    text-align: center;
+    position: relative;
+    padding-bottom: 25px;
+}
+.clock span::after{
+    font-size: 16px;
+    position: absolute;
+    bottom: -5px;
+    left: 50%;
+    transform: translateX(-50%);
+}
+#hrs::after{
+    content: 'HOURS';
+}
+#min::after{
+    content: 'MINS';
+}
+#sec::after{
+    content: 'SEC';
+}
+.datetime{
+    width: 100%;
+    font-size: 18px;
+    font-weight: 600;
+    text-align: center;
+    letter-spacing: 3px;
+    margin-top: 10px;
+}
+.datetime span {
+    margin: 0 5px;
+}
+
+.button-container {
+    position: absolute;
+    bottom: 100px;
+    width: 100%;
+    text-align: center;
+}
+
+.glass-button {
+    background: rgba(151, 125, 255, 0.15);
+    color: #fff;
+    border: 1px solid rgba(255,255,255,0.3);
+    padding: 12px 35px;
+    font-size: 16px;
+    border-radius: 25px;
+    backdrop-filter: blur(40px);
+    cursor: pointer;
+    transition: all 0.3s;
+    text-decoration: none;
+    display: inline-block;
+    font-family: 'Playfair Display', serif;
+    font-weight: 500;
+    letter-spacing: 1px;
+}
+
+.glass-button:hover {
+    background: rgba(151, 125, 255, 0.25);
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(151, 125, 255, 0.2);
+}
