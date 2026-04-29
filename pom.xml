@@ -139,7 +139,7 @@
                 <version>${maven.war.version}</version>
                 <configuration>
                     <failOnMissingWebXml>false</failOnMissingWebXml>
-                    <warSourceExcludes>WEB-INF/lib/*.jar</warSourceExcludes> <!-- Исключаем все JAR, если они не нужны -->
+                    <warSourceExcludes>WEB-INF/lib/*.jar</warSourceExcludes>
                 </configuration>
             </plugin>
         </plugins>
