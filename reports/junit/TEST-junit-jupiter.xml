@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testsuite name="JUnit Jupiter" tests="21" skipped="0" failures="0" errors="0" time="0.058" hostname="MacBook-Air-Anna-6.local" timestamp="2026-04-29T19:21:13">
+<testsuite name="JUnit Jupiter" tests="21" skipped="0" failures="0" errors="0" time="0.059" hostname="MacBook-Air-Anna-6.local" timestamp="2026-04-29T19:31:52">
 <properties>
 <property name="file.encoding" value="UTF-8"/>
 <property name="file.separator" value="/"/>
@@ -175,7 +175,7 @@ unique-id: [engine:junit-jupiter]/[class:by.rozze.weblab3.Service.AreaCheckServi
 display-name: [19] 1.0, 1.0, 0.0, false
 ]]></system-out>
 </testcase>
-<testcase name="checkHitTest(double, double, double, boolean)[1]" classname="by.rozze.weblab3.Service.AreaCheckServiceTest" time="0.005">
+<testcase name="checkHitTest(double, double, double, boolean)[1]" classname="by.rozze.weblab3.Service.AreaCheckServiceTest" time="0.006">
 <system-out><![CDATA[
 unique-id: [engine:junit-jupiter]/[class:by.rozze.weblab3.Service.AreaCheckServiceTest]/[test-template:checkHitTest(double, double, double, boolean)]/[test-template-invocation:#1]
 display-name: [1] -1.2, 0.8, 4.0, true
