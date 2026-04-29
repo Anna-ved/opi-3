@@ -1,0 +1,252 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="webLab3-ant" default="build" basedir=".">
+    <property file="build.properties"/>
+
+    <path id="project.classpath">
+        <fileset dir="${lib.dir}" erroronmissingdir="false">
+            <include name="**/*.jar"/>
+        </fileset>
+    </path>
+
+    <target name="resolve" description="Копирование зависимостей Maven для компиляции и тестов">
+        <mkdir dir="${lib.dir}"/>
+        <exec executable="${maven.command}" failonerror="true">
+            <arg line="${maven.copy.dependencies.args}"/>
+        </exec>
+        <exec executable="${maven.command}" failonerror="true">
+            <arg line="${maven.copy.junit.console.args}"/>
+        </exec>
+    </target>
+
+    <target name="compile" depends="resolve" description="Компиляция исходных кодов проекта">
+        <mkdir dir="${classes.dir}"/>
+        <javac srcdir="${src.dir}"
+               destdir="${classes.dir}"
+               source="${java.source.version}"
+               target="${java.target.version}"
+               encoding="${project.encoding}"
+               includeantruntime="false"
+               debug="true">
+            <classpath refid="project.classpath"/>
+        </javac>
+        <copy todir="${classes.dir}">
+            <fileset dir="${resources.dir}" erroronmissingdir="false"/>
+        </copy>
+    </target>
+
+    <target name="build" depends="compile" description="Компиляция и упаковка проекта в исполняемый jar-архив">
+        <mkdir dir="${dist.dir}"/>
+        <jar destfile="${jar.file}" basedir="${classes.dir}">
+            <manifest>
+                <attribute name="${manifest.version.attribute}" value="${project.version}"/>
+                <attribute name="${manifest.main.attribute}" value="${main.class}"/>
+                <attribute name="${manifest.created.by.attribute}" value="${manifest.created.by}"/>
+            </manifest>
+            <zipfileset dir="${webapp.dir}" erroronmissingdir="false" prefix="webapp"/>
+        </jar>
+        <echo message="Jar создан: ${jar.file}"/>
+    </target>
+
+    <target name="clean" description="Удаление скомпилированных классов и временных файлов">
+        <delete dir="${build.dir}"/>
+        <delete dir="${dist.dir}"/>
+        <delete dir="${reports.dir}"/>
+        <delete dir="${lib.dir}"/>
+    </target>
+
+    <target name="compile-tests" depends="build" description="Компиляция junit-тестов">
+        <mkdir dir="${test.classes.dir}"/>
+        <javac srcdir="${test.src.dir}"
+               destdir="${test.classes.dir}"
+               source="${java.source.version}"
+               target="${java.target.version}"
+               encoding="${project.encoding}"
+               includeantruntime="false"
+               debug="true">
+            <classpath>
+                <pathelement location="${classes.dir}"/>
+                <path refid="project.classpath"/>
+            </classpath>
+        </javac>
+    </target>
+
+    <target name="test" depends="compile-tests" description="Запуск junit-тестов проекта после сборки build">
+        <mkdir dir="${reports.dir}"/>
+        <path id="test.runtime.classpath.path">
+            <pathelement location="${classes.dir}"/>
+            <pathelement location="${test.classes.dir}"/>
+            <path refid="project.classpath"/>
+        </path>
+        <pathconvert property="test.runtime.classpath" refid="test.runtime.classpath.path"/>
+        <java jar="${junit.console.jar}" fork="true" failonerror="true">
+            <arg value="execute"/>
+            <arg value="--class-path"/>
+            <arg value="${test.runtime.classpath}"/>
+            <arg value="--scan-class-path"/>
+            <arg value="--reports-dir"/>
+            <arg value="${reports.dir}"/>
+        </java>
+    </target>
+
+    <target name="checksums" description="Создание MD5 и SHA-1 для файлов проекта">
+        <mkdir dir="${checksums.dir}"/>
+        <checksum algorithm="MD5" todir="${checksums.dir}" totalproperty="project.md5">
+            <fileset dir="${basedir}">
+                <include name="src/**"/>
+                <include name="pom.xml"/>
+                <include name="build.xml"/>
+                <include name="build.properties"/>
+                <exclude name="build/**"/>
+                <exclude name="dist/**"/>
+                <exclude name="target/**"/>
+                <exclude name=".git/**"/>
+                <exclude name=".idea/**"/>
+            </fileset>
+        </checksum>
+        <checksum algorithm="SHA-1" todir="${checksums.dir}" totalproperty="project.sha1">
+            <fileset dir="${basedir}">
+                <include name="src/**"/>
+                <include name="pom.xml"/>
+                <include name="build.xml"/>
+                <include name="build.properties"/>
+                <exclude name="build/**"/>
+                <exclude name="dist/**"/>
+                <exclude name="target/**"/>
+                <exclude name=".git/**"/>
+                <exclude name=".idea/**"/>
+            </fileset>
+        </checksum>
+    </target>
+
+    <target name="doc" depends="build,checksums" description="Добавление MD5/SHA-1 в MANIFEST.MF и генерация javadoc внутри jar">
+        <mkdir dir="${javadoc.dir}"/>
+        <javadoc sourcepath="${src.dir}"
+                 destdir="${javadoc.dir}"
+                 encoding="${project.encoding}"
+                 charset="${project.encoding}"
+                 docencoding="${project.encoding}"
+                 failonerror="false">
+            <classpath refid="project.classpath"/>
+            <package name="by.rozze.weblab3.*"/>
+        </javadoc>
+        <jar destfile="${jar.file}" update="true">
+            <manifest>
+                <attribute name="${manifest.version.attribute}" value="${project.version}"/>
+                <attribute name="${manifest.main.attribute}" value="${main.class}"/>
+                <attribute name="${manifest.created.by.attribute}" value="${manifest.created.by}"/>
+                <attribute name="${manifest.md5.attribute}" value="${project.md5}"/>
+                <attribute name="${manifest.sha1.attribute}" value="${project.sha1}"/>
+            </manifest>
+            <zipfileset dir="${javadoc.dir}" prefix="javadoc"/>
+            <zipfileset dir="${checksums.dir}" prefix="META-INF/checksums"/>
+        </jar>
+        <echo message="Javadoc и контрольные суммы добавлены в ${jar.file}"/>
+    </target>
+
+    <target name="xml" description="Валидация всех xml-файлов проекта">
+        <xmlvalidate lenient="${xml.validate.lenient}">
+            <fileset dir="${basedir}">
+                <include name="**/*.xml"/>
+                <exclude name="build/**"/>
+                <exclude name="dist/**"/>
+                <exclude name="target/**"/>
+                <exclude name=".git/**"/>
+                <exclude name=".idea/**"/>
+            </fileset>
+        </xmlvalidate>
+        <echo message="XML-файлы проверены."/>
+    </target>
+
+    <target name="native2ascii" description="Преобразование копий файлов локализации через native2ascii">
+        <mkdir dir="${native2ascii.out.dir}"/>
+        <native2ascii src="${localization.src.dir}"
+                      dest="${native2ascii.out.dir}"
+                      encoding="${native2ascii.encoding}">
+            <include name="${localization.include.pattern}"/>
+        </native2ascii>
+        <echo message="Файлы локализации скопированы в ${native2ascii.out.dir}"/>
+    </target>
+
+    <target name="music" depends="build" description="Воспроизведение музыки после успешной сборки build">
+        <available file="${music.file}" property="music.file.exists"/>
+        <antcall target="-play-music-file"/>
+        <antcall target="-play-music-bell"/>
+    </target>
+
+    <target name="-play-music-file" if="music.file.exists">
+        <exec executable="${music.player}" failonerror="false">
+            <arg value="${music.file}"/>
+        </exec>
+    </target>
+
+    <target name="-play-music-bell" unless="music.file.exists">
+        <echo message="${music.fallback.message}"/>
+    </target>
+
+    <target name="env" depends="build">
+        <echo message="Запуск программы в альтернативном окружении"/>
+        <echo message="Java executable: ${env.java.executable}"/>
+        <echo message="JVM args: ${env.jvm.args}"/>
+        <echo message="Program args: ${env.program.args}"/>
+
+        <java jar="${jar.file}"
+              fork="true"
+              failonerror="true"
+              jvm="${env.java.executable}">
+            <jvmarg line="${env.jvm.args}"/>
+            <arg line="${env.program.args}"/>
+        </java>
+    </target>
+
+    <target name="team" description="Получение двух предыдущих svn-ревизий, сборка build и упаковка jar в zip">
+        <mkdir dir="${team.work.dir}"/>
+        <mkdir dir="${team.dist.dir}"/>
+        <exec executable="sh" failonerror="true">
+            <arg value="-c"/>
+            <arg value="set -e; rm -rf '${team.work.dir}'/* '${team.dist.dir}'/*.jar; current_rev=$(svn info --show-item revision '${svn.url}'); for n in 1 2; do r=$((current_rev-n)); svn export ${svn.export.quiet.flag} -r $r '${svn.url}' '${team.work.dir}/rev'$r; cp build.xml build.properties '${team.work.dir}/rev'$r/; cd '${team.work.dir}/rev'$r; ant clean build; cd - >/dev/null; cp '${team.work.dir}/rev'$r'/${jar.file}' '${team.dist.dir}/${project.name}-r'$r'.jar'; done"/>
+        </exec>
+        <zip destfile="${team.zip.file}" basedir="${team.dist.dir}" includes="*.jar"/>
+        <echo message="Архив двух предыдущих ревизий создан: ${team.zip.file}"/>
+    </target>
+
+    <target name="report" depends="test" description="После успешных тестов сохранить junit xml, добавить в git и выполнить commit">
+        <exec executable="sh" failonerror="false">
+            <arg value="-c"/>
+            <arg value="git add '${reports.dir}' &amp;&amp; git diff --cached --quiet || git commit -m '${git.report.message}'"/>
+        </exec>
+        <echo message="JUnit XML-отчет сохранен в ${reports.dir} и обработан git."/>
+    </target>
+
+    <target name="alt" description="Создание альтернативной версии программы и упаковка в jar">
+        <delete dir="${alt.work.dir}"/>
+        <mkdir dir="${alt.work.dir}/src/main"/>
+        <copy todir="${alt.work.dir}/src/main">
+            <fileset dir="src/main"/>
+        </copy>
+        <move file="${alt.work.dir}/src/main/java/${alt.class.package.dir}/${alt.class.old}.java"
+              tofile="${alt.work.dir}/src/main/java/${alt.class.package.dir}/${alt.class.new}.java"/>
+        <replaceregexp match="${alt.class.old}" replace="${alt.class.new}" flags="g" byline="true">
+            <fileset dir="${alt.work.dir}/src/main/java">
+                <include name="**/*.java"/>
+            </fileset>
+        </replaceregexp>
+        <replaceregexp match="\b${alt.var.old}\b" replace="${alt.var.new}" flags="g" byline="true">
+            <fileset dir="${alt.work.dir}/src/main/java">
+                <include name="**/*.java"/>
+            </fileset>
+        </replaceregexp>
+        <replace dir="${alt.work.dir}/src/main/java" token="${alt.var2.old}" value="${alt.var2.new}">
+            <include name="**/*.java"/>
+        </replace>
+        <antcall target="build">
+            <param name="src.dir" value="${alt.work.dir}/src/main/java"/>
+            <param name="resources.dir" value="${alt.work.dir}/src/main/resources"/>
+            <param name="webapp.dir" value="${alt.work.dir}/src/main/webapp"/>
+            <param name="build.dir" value="${alt.build.dir}"/>
+            <param name="classes.dir" value="${alt.build.dir}/classes"/>
+            <param name="dist.dir" value="${alt.dist.dir}"/>
+            <param name="jar.file" value="${alt.jar.file}"/>
+        </antcall>
+        <echo message="Альтернативный jar создан: ${alt.jar.file}"/>
+    </target>
+</project>
