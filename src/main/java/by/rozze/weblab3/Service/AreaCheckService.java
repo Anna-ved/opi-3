@@ -7,6 +7,12 @@ import jakarta.inject.Named;
 @ApplicationScoped
 public class AreaCheckService {
     public static boolean checkHit(double x, double y, double r) {
+        if (Double.isNaN(x) || Double.isNaN(y) || Double.isNaN(r) ||
+                Double.isInfinite(x) || Double.isInfinite(y) || Double.isInfinite(r) ||
+                r <= 0) {
+            return false;
+        }
+
         return isRect(x, y, r) || isTriangle(x, y, r) || isCircle(x, y, r);
     }
 
