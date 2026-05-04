@@ -44,7 +44,6 @@ function drawLastPoint() {
     const r = parseFloat(svg.getAttribute('data-r-value')) || 1;
 
     if (isNaN(x) || isNaN(y) || isNaN(r) || r === 0) return;
-d
     const hit = cells[4].textContent.includes('✓');
     changeFavicon(hit);
     createPointElement(x, y, r, hit);

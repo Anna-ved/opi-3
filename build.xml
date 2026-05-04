@@ -34,6 +34,30 @@
         </copy>
     </target>
 
+    <target name="war" depends="compile" description="Сборка web-приложения в WAR-архив">
+        <mkdir dir="${dist.dir}"/>
+
+        <war destfile="${war.file}" webxml="${webapp.dir}/WEB-INF/web.xml">
+            <fileset dir="${webapp.dir}">
+                <exclude name="WEB-INF/web.xml"/>
+            </fileset>
+
+            <classes dir="${classes.dir}"/>
+
+            <lib dir="${lib.dir}">
+                <include name="*.jar"/>
+            </lib>
+
+            <manifest>
+                <attribute name="${manifest.version.attribute}" value="${project.version}"/>
+                <attribute name="${manifest.main.attribute}" value="${main.class}"/>
+                <attribute name="${manifest.created.by.attribute}" value="${manifest.created.by}"/>
+            </manifest>
+        </war>
+
+        <echo message="WAR создан: ${war.file}"/>
+    </target>
+
     <target name="build" depends="compile" description="Компиляция и упаковка проекта в исполняемый jar-архив">
         <mkdir dir="${dist.dir}"/>
         <jar destfile="${jar.file}" basedir="${classes.dir}">
@@ -45,6 +69,33 @@
             <zipfileset dir="${webapp.dir}" erroronmissingdir="false" prefix="webapp"/>
         </jar>
         <echo message="Jar создан: ${jar.file}"/>
+    </target>
+
+    <target name="deploy" depends="war" description="Деплой WAR-архива на WildFly на сервер">
+        <echo message="Копирование ${war.file} на сервер"/>
+
+        <exec executable="scp" failonerror="true">
+            <arg value="-P"/>
+            <arg value="${deploy.port}"/>
+            <arg value="${war.file}"/>
+            <arg value="${deploy.user}@${deploy.host}:${deploy.remote.war}"/>
+        </exec>
+
+        <echo message="Загрузка нового WAR в WildFly"/>
+
+        <exec executable="ssh" failonerror="true">
+            <arg value="-p"/>
+            <arg value="${deploy.port}"/>
+            <arg value="${deploy.user}@${deploy.host}"/>
+            <arg value="JAVA_OPTS='${wildfly.cli.java.opts}' ${wildfly.remote.cli} --connect --controller=${wildfly.remote.controller} --user=${wildfly.management.user} --password=${wildfly.management.password} --command='deploy ${deploy.remote.war} --force --name=${deploy.name} --runtime-name=${deploy.runtime.name}'"/>
+        </exec>
+
+        <echo message="Новый WAR загружен в WildFly"/>
+        <echo message="Сайт доступен по адресу: ${deploy.url}"/>
+
+        <exec executable="open" osfamily="mac" failonerror="false">
+            <arg value="${deploy.url}"/>
+        </exec>
     </target>
 
     <target name="clean" description="Удаление скомпилированных классов и временных файлов">
